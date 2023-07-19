@@ -1,12 +1,13 @@
 ﻿using Polly;
 using Polly.Retry;
+using RabbitMQ.Client.AspNetCore;
 using RabbitMQ.Client.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
 
-namespace RabbitMQ.Client.AspNetCore.RabbitMQ.Client
+namespace RabbitMQ.Client
 {
     public static class IModelExtension
     {

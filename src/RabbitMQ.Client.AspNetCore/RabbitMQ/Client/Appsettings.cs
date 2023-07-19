@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RabbitMQ.Client.AspNetCore.RabbitMQ.Client
+namespace RabbitMQ.Client.AspNetCore
 {
     public static class Appsettings
     {

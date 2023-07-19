@@ -44,10 +44,5 @@ namespace RabbitMQ.Client.AspNetCore
 
             return services;
         }
-
-        public static IServiceCollection AddRabbitClient(this IServiceCollection services, Action<RabbitMQOptions> action)
-        {
-            return services;
-        }
     }
 }
