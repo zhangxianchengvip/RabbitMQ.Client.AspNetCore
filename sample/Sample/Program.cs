@@ -14,6 +14,7 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddRabbitMQClient();
+        builder.Services.AddHostedService<BackgroundTasks>();
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
