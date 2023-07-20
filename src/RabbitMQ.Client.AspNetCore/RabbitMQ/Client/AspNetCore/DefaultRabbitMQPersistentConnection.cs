@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Retry;
 using RabbitMQ.Client;
@@ -19,10 +20,12 @@ namespace RabbitMQ.Client.AspNetCore
         public bool Disposed;
         readonly object _syncRoot = new object();
 
-        public DefaultRabbitMQPersistentConnection(IConnectionFactory connectionFactory, ILogger<DefaultRabbitMQPersistentConnection> logger)
+        private readonly RabbitMQOptions _rabbitMQOptions;
+        public DefaultRabbitMQPersistentConnection(IConnectionFactory connectionFactory, ILogger<DefaultRabbitMQPersistentConnection> logger, IOptionsMonitor<RabbitMQOptions> options)
         {
             _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _rabbitMQOptions = options.CurrentValue;
         }
 
         public bool IsConnected => _connection is { IsOpen: true } && !Disposed;
@@ -34,7 +37,11 @@ namespace RabbitMQ.Client.AspNetCore
                 throw new InvalidOperationException("No RabbitMQ connections are available to perform this action");
             }
 
-            return _connection.CreateModel();
+            var channel = _connection.CreateModel();
+
+            channel.ExchangeDeclare(exchange: _rabbitMQOptions.ExchangeName, type: _rabbitMQOptions.ExchangeType);
+
+            return channel;
         }
 
         public void Dispose()

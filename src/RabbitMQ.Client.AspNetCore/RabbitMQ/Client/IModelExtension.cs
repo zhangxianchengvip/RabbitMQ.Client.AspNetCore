@@ -11,12 +11,11 @@ namespace RabbitMQ.Client
 {
     public static class IModelExtension
     {
-        public static void BasicPublish(this IModel channel, string topic, byte[] body)
+        public static void BasicPublish(this IModel channel, byte[] body, string exchangeType, string exchange = null, string routingKey = null)
         {
             if (channel == null)
                 throw new ArgumentNullException(nameof(channel));
 
-            var options = Appsettings.RabbitMQOptions;
 
             var policy = RetryPolicy
                 .Handle<BrokerUnreachableException>()
@@ -24,11 +23,11 @@ namespace RabbitMQ.Client
                 .WaitAndRetry(retryCount: 5, sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
                  onRetry: (ex, time) =>
                  {
-                    Console.WriteLine(ex.Message);
+                     Console.WriteLine(ex.Message);
                  });
 
 
-            channel.ExchangeDeclare(exchange: options.ExchangeName, type: options.ExchangeType);
+            channel.ExchangeDeclare(exchange: exchange, type: exchangeType);
 
             policy.Execute(() =>
             {
@@ -37,8 +36,8 @@ namespace RabbitMQ.Client
                 //properties.Priority = priority;
 
                 channel.BasicPublish(
-                                    exchange: options.ExchangeName,
-                                    routingKey: topic,
+                                    exchange: "",
+                                    routingKey: routingKey,
                                     mandatory: true,
                                     basicProperties: properties,
                                     body: body);
