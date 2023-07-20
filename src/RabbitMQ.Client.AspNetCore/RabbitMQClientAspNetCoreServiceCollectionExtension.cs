@@ -6,15 +6,15 @@ namespace RabbitMQ.Client.AspNetCore
 {
     public static class RabbitMQClientAspNetCoreServiceCollectionExtension
     {
-        public static IServiceCollection AddRabbitClient(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddRabbitMQClient(this IServiceCollection services)
         {
-            services.AddAutoOptions(configuration);
-
-            configuration.GetSection(nameof(RabbitMQOptions)).Bind(Appsettings.RabbitMQOptions);
 
             services.AddSingleton<IConnectionFactory>(sp =>
             {
+                var configuration = sp.GetRequiredService<IConfiguration>();
+
                 var options = configuration.GetOptions<RabbitMQOptions>();
+
                 return new ConnectionFactory()
                 {
                     HostName = options.HostName,

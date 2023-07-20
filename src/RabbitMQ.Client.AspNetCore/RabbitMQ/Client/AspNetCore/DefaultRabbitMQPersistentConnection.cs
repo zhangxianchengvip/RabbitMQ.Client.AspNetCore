@@ -34,14 +34,12 @@ namespace RabbitMQ.Client.AspNetCore
         {
             if (!IsConnected)
             {
-                throw new InvalidOperationException("No RabbitMQ connections are available to perform this action");
+                TryConnect();
             }
 
-            var channel = _connection.CreateModel();
+            return _connection.CreateModel();
 
-            channel.ExchangeDeclare(exchange: _rabbitMQOptions.ExchangeName, type: _rabbitMQOptions.ExchangeType);
 
-            return channel;
         }
 
         public void Dispose()
